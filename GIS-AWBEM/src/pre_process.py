@@ -302,7 +302,7 @@ def enrich(df_geo, execute, path_enrichment, region, mun_growth, mun_size):
 
             # Note: missing values of 'building_levels' is suggested to be manually corrected in the OSM file. If not, mean of district is assumed for nans.
             if pd.isna(df_geo.loc[idx, 'building_levels']):
-                df_geo.loc[idx, 'building_levels'] = df_geo['building_levels'].astype(float).mean()
+                df_geo.loc[idx, 'building_levels'] = df_geo['building_levels'].astype(float).mean().astype(str)
 
             # Enrich the height with ETHOS
             if dict_enrich[osm_id]['height']:
