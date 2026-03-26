@@ -81,18 +81,18 @@ def parse_err(output_dir, err_file):
                 fatals.append(line.strip())
 
     # write errors, warning and fatals in a file
-    with open (output_dir + f"\Warnings\{file_name}_warning.txt", "w") as f:
+    with open (output_dir + fr"\Warnings\{file_name}_warning.txt", "w") as f:
         for w in warnings:
             if w in supressed_warnings:
                 continue
             else:
                 f.write(w)
 
-    with open (output_dir + f"\Severs\{file_name}_severe.txt", "w") as f:
+    with open (output_dir + fr"\Severs\{file_name}_severe.txt", "w") as f:
         for s in severes:
             f.write(s)
 
-    with open (output_dir + f"\Fatals\{file_name}_fatal.txt", "w") as f:
+    with open (output_dir + fr"\Fatals\{file_name}_fatal.txt", "w") as f:
         for ft in fatals:
             f.write(ft)
 
@@ -105,7 +105,7 @@ def parse_err(output_dir, err_file):
 path_src = Path(__file__).resolve().parent
 
 # input path
-path_input = path_src.parent
+path_input = path_src.parent / "Inputs"
 
 # IDF directory
 idf_dir = path_src / "Generated_IDFs"
@@ -114,7 +114,7 @@ idf_dir = path_src / "Generated_IDFs"
 epw_file = path_input / "Rheinstetten_04177.epw"
 
 # Output dir
-output_dir = os.path.join(path_src, 'Results\IdealHVAC')
+output_dir = os.path.join(path_src, 'Results\\IdealHVAC')
 
 # Run all buildings in the district
 run_district(idf_dir, epw_file, output_dir)

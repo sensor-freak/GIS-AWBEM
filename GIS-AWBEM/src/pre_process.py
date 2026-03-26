@@ -8,7 +8,7 @@ from pathlib import Path
 
 # Get files locations
 path_src = Path(__file__).resolve().parent
-path_input = path_src.parent
+path_input = path_src.parent / "Inputs"
 
 
 def to_float(value):
@@ -96,7 +96,7 @@ def get_bldg_mat(mat_dict, B_type, B_year):
 
 def geo_process(path_input, osm_file):
 
-    with open(path_input + f"{osm_file}", "r", encoding="utf-8") as f:
+    with open(path_input / f"{osm_file}", "r", encoding="utf-8") as f:
         geojson = json.load(f)
 
     # Extract the features
@@ -156,7 +156,7 @@ def geo_process(path_input, osm_file):
 def enrich(df_geo, execute, path_enrichment, region, mun_growth, mun_size):
 
     mat_dict = {}
-    Tabula = pd.read_csv(path_input + 'Tabula_Uvalues.csv', sep=';')
+    Tabula = pd.read_csv(path_input / 'Tabula_Uvalues.csv', sep=';')
 
     if execute in ['Yes', 'YES', 'yes', 'y']:
         path_residential = os.path.join(path_enrichment, 'Residential')
@@ -219,7 +219,7 @@ def enrich(df_geo, execute, path_enrichment, region, mun_growth, mun_size):
     
         non_res_list = ['Culture', 'Education', 'Health', 'Hospitality', 'Industrial', 'Office', 'Retail']
         for nr in non_res_list:
-            df_nr = pd.read_excel(fr'C:\Users\yf9777\Desktop\ABEMOD\Inputs\HUB4LCA\{nr}\minimal_excel_{nr}_only_window.xlsx').T
+            df_nr = pd.read_excel( path_input / fr'HUB4LCA\{nr}\minimal_excel_{nr}_only_window.xlsx').T
             nr_dict = df_nr[0].to_dict()
             mat_dict[nr] = {}
             mat_dict[nr]['WWR'] = nr_dict['window_wall_share']
@@ -230,7 +230,7 @@ def enrich(df_geo, execute, path_enrichment, region, mun_growth, mun_size):
 
 
         # building heights and archetypes
-        ethos = pd.read_csv(path_input + 'building_data_241_enriched.csv', sep=';', dtype={'osm_id': 'string'})
+        ethos = pd.read_csv(path_input / 'building_data_241_enriched.csv', sep=';', dtype={'osm_id': 'string'})
         
         # Fill the non-existing building types with existing OSM building types,
         ethos['building_type'] = ethos['building_type'].fillna(df_geo['building'])
@@ -328,15 +328,15 @@ def internal_gains(file_name):
     IG_intensity = {}
     Tset = {}
     for i, name in enumerate(['Residential', 'School', 'Office', 'Commercial']):
-        IG_profile[name] = pd.read_excel(path_input + file_name, sheet_name=name, nrows=24, usecols=range(5))
-        Tset[name] = pd.read_excel(path_input + file_name, sheet_name=name, nrows=24, usecols=range(5,8))
+        IG_profile[name] = pd.read_excel(path_input / file_name, sheet_name=name, nrows=24, usecols=range(5))
+        Tset[name] = pd.read_excel(path_input / file_name, sheet_name=name, nrows=24, usecols=range(5,8))
         
         # Creat a dictionary for internal gain intensities
         IG_int = {}
-        IG_int['People_activity [W/person]'] = pd.read_excel(path_input + file_name, sheet_name=name, nrows=1, usecols=['People_activity [W/person]']).values[0][0]
-        IG_int['People_density [person/m2]'] = pd.read_excel(path_input + file_name, sheet_name=name, nrows=1, usecols=['People_density [person/m2]']).values[0][0]
-        IG_int['Electric_equipment [W/m2]'] = pd.read_excel(path_input + file_name, sheet_name=name, nrows=1, usecols=['Electric_equipment [W/m2]']).values[0][0]
-        IG_int['Lighting_level [W/m2]'] = pd.read_excel(path_input + file_name, sheet_name=name, nrows=1, usecols=['Lighting_level [W/m2]']).values[0][0]
+        IG_int['People_activity [W/person]'] = pd.read_excel(path_input / file_name, sheet_name=name, nrows=1, usecols=['People_activity [W/person]']).values[0][0]
+        IG_int['People_density [person/m2]'] = pd.read_excel(path_input / file_name, sheet_name=name, nrows=1, usecols=['People_density [person/m2]']).values[0][0]
+        IG_int['Electric_equipment [W/m2]'] = pd.read_excel(path_input / file_name, sheet_name=name, nrows=1, usecols=['Electric_equipment [W/m2]']).values[0][0]
+        IG_int['Lighting_level [W/m2]'] = pd.read_excel(path_input / file_name, sheet_name=name, nrows=1, usecols=['Lighting_level [W/m2]']).values[0][0]
         IG_intensity[name] = IG_int
 
     return IG_profile, IG_intensity, Tset

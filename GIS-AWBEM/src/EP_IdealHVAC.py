@@ -4,7 +4,8 @@ import os
 from pathlib import Path
 import subprocess
 from datetime import datetime
-from src.utilites import *
+
+from src.utilities import *
 
 def simulation_control(idf,
                    do_zone_sizing='No',
@@ -915,7 +916,7 @@ def floor_surface(idf, floor_coords_CW):
     
     return
 
-def wall_surface(idf, Btop_coords_CCW):
+def wall_surface(idf, Btop_coords_CCW, floor_coords_CW):
     No_of_walls = Btop_coords_CCW.shape[0]
     
     # Add first element to the end to close the polygon

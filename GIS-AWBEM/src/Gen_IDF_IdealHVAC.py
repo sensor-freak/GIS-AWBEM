@@ -1,13 +1,17 @@
 import numpy as np
 import pandas as pd
 import os
+from eppy import modeleditor
+
+import src.EP_IdealHVAC
 from src.pre_process import *
 from src.EP_IdealHVAC import *
+from src.utilities import *
 
 
 # Get files locations
 path_src = Path(__file__).resolve().parent
-path_input = path_src.parent
+path_input = path_src.parent / "Inputs"
 path_enrichment = path_input / "HUB4LCA"
 
 # Load and process the geospatial data
@@ -33,7 +37,7 @@ IG_profile, IG_intensity, Tset = internal_gains(IG_file_name)
 
 
 # check if the the IDF save folder exists
-path_save = os.path.join(path_src, "IdealHVAC\Generated_IDFs")
+path_save = os.path.join(path_src, r"IdealHVAC\Generated_IDFs")
 if not os.path.exists(path_save):
     os.makedirs(path_save)
 
@@ -92,15 +96,16 @@ for idx_b, osm_id in enumerate(df_geo['osm_id']):
     # ====================================================================
 
     # Sepcify EnergyPlus Input Data Dictionary
-    iddfile = r'C:\EnergyPlusV25-1-0\Energy+.idd'
-    IDF.setiddname(iddfile)
+    # iddfile = r'C:\EnergyPlusV25-1-0\Energy+.idd'
+    iddfile = path_input / r'Energy+.idd'
+    modeleditor.IDF.setiddname(iddfile)
 
     # Define E+ version
     version = '25.1'
     
     # Initaite the IDF file
     start_idf = f'Version, {version};'
-    idf = IDF(StringIO(start_idf))
+    idf = modeleditor.IDF(modeleditor.StringIO(start_idf))
     # idf.printidf()
 
     
@@ -304,7 +309,7 @@ for idx_b, osm_id in enumerate(df_geo['osm_id']):
     
     
     # ============== Wall Objects ============== 
-    wall_dict = wall_surface(idf, Btop_coords_CCW)
+    wall_dict = wall_surface(idf, Btop_coords_CCW, floor_coords_CW)
 
 
     # ============== Window Objects ==============
